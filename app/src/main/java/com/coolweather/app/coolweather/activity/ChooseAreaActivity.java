@@ -76,9 +76,11 @@ public class ChooseAreaActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int index, long l) {
                 if(currentLevel==LEVEL_PROVINCE) {
+                    System.out.println("LEVEL_PROVINCE");
                     selectedProvince = mProvinceList.get(index);
                     queryCities();//获取当前省份的所有市
                 }else if (currentLevel==LEVEL_CITY){
+                    System.out.println("LEVEL_CITY");
                     selectedCity=mCityList.get(index);
                     queryCounties();
                 }
@@ -90,6 +92,7 @@ public class ChooseAreaActivity extends Activity {
 
     //查询全国所有的省，优先从数据库中查询，如果没有查询到再到服务器上去查询。
     private void queryProvinces(){
+        System.out.println("queryProvinces()");
         //从数据库中读取全国省份信息
         mProvinceList =mCoolWeatherDB.loadProvinces();
         if(mProvinceList.size()>0){
@@ -110,6 +113,7 @@ public class ChooseAreaActivity extends Activity {
 
     //查询选中的省内所有的市，优先从数据库查询，如果没有查询到再去服务器上查询
     private void queryCities(){
+        System.out.println("queryCities()");
         mCityList=mCoolWeatherDB.loadCities(selectedProvince.getId());
         if(mCityList.size()>0){
             dataList.clear();//清理dataList列表
@@ -122,6 +126,7 @@ public class ChooseAreaActivity extends Activity {
             titleText.setText(selectedProvince.getProvinceName());//设置标题为当前省份
             currentLevel=LEVEL_CITY;//把当前级别设置成市级
         }else {//从数据库中没查到，就从服务器中查
+
             queryFromServer(selectedProvince.getProvinceCode(),"city");
         }
     }
@@ -129,6 +134,7 @@ public class ChooseAreaActivity extends Activity {
 
     //查询所有选中市所有的县，优先从数据库查询，如果没有查询到再到服务器上去查询
     private void queryCounties(){
+        System.out.println("queryCounties()");
         mCountyList=mCoolWeatherDB.loadConties(selectedCity.getId());
         if(mCountyList.size()>0){
             dataList.clear();
@@ -139,6 +145,9 @@ public class ChooseAreaActivity extends Activity {
             listView.setSelection(0);
             titleText.setText(selectedCity.getCityName());
             currentLevel=LEVEL_COUNTY;
+        }else {//从数据库中没查到，就从服务器中查
+
+            queryFromServer(selectedCity.getCityCode(),"county");
         }
     }
 
@@ -148,20 +157,25 @@ public class ChooseAreaActivity extends Activity {
 
     //根据传入的代号和类型从服务器上查询省市县的数据。
     private void queryFromServer(final String code,final String type){
+        System.out.println(" queryFromServer(final String code,final String type)");
         String address;
-        if(TextUtils.isEmpty(code)){//如果code不为空，则根据上级的code查询市级或者县级的信息
+        if(!TextUtils.isEmpty(code)){//如果code不为空，则根据上级的code查询市级或者县级的信息
             address="http://www.weather.com.cn/data/list3/city"+code+".xml";
         }else{
-         address="http://www.weather.com.cn/data/list3/city.xml";
+            address="http://www.weather.com.cn/data/list3/city.xml";
+            //address="http://www.baidu.com";
         }
+        System.out.println(address);
         showProgeressDialog();
         HttpUtil.sendHttpRequest(address, new HttpCallBackListener() {
             @Override
             public void onFinish(String response) {
+                System.out.println("finish");
                 boolean result=false;
                 if("province".equals(type)){
                     result = Utility.handleProvincesResponse(mCoolWeatherDB,response);
                 }else if("city".equals(type)){
+                    System.out.println("\"city\".equals(type)");
                     result =Utility.handleCitiesReponse(mCoolWeatherDB,response,selectedProvince.getId());
                 }else if("county".equals(type)){
                     result=Utility.handleContiesReponse(mCoolWeatherDB,response,selectedCity.getId());
@@ -186,6 +200,7 @@ public class ChooseAreaActivity extends Activity {
 
             @Override
             public void onError(Exception e) {
+                System.out.println("error");
                 //通过runOnUiThread方法回到主线程处理逻辑
                 runOnUiThread(new Runnable() {
                     @Override

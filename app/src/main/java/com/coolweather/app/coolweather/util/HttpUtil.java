@@ -13,20 +13,27 @@ import java.net.URL;
 public class HttpUtil {
 
     public  static  void sendHttpRequest(final String address,final HttpCallBackListener listener){
+        System.out.println("sendHttpRequest(final String address,final HttpCallBackListener listener)");
             new Thread(new Runnable() {
                 @Override
                 public void run() {
+                    System.out.println("new Thread");
                     HttpURLConnection connection = null;
                     try {
+                        System.out.println("进入try");
                         URL url = new URL(address);
                         //建立连接
+
                         connection = (HttpURLConnection) url.openConnection();
+                        System.out.println("建立连接");
                         //设置访问方式，访问超时时间，读超时时间
                         connection.setRequestMethod("GET");
                         connection.setConnectTimeout(8000);
                         connection.setReadTimeout(8000);
+
                         //发送请求，返回结果
                         InputStream in = connection.getInputStream();
+                        System.out.println("发送请求，返回结果");
                         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
                         StringBuilder response = new StringBuilder();
                         String line;
@@ -48,6 +55,6 @@ public class HttpUtil {
                         }
                     }
                 }
-            });
+            }).start();
     }
 }

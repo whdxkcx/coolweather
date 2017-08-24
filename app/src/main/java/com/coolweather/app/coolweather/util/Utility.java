@@ -1,5 +1,6 @@
 package com.coolweather.app.coolweather.util;
 
+import android.provider.Settings;
 import android.text.TextUtils;
 
 import com.coolweather.app.coolweather.db.CoolWeatherDB;
@@ -28,8 +29,10 @@ public class Utility {
                 }
 
             }
+            System.out.println("获取数据成功");
             return true;
         }
+        System.out.println("获取数据失败");
         return false;
     }
 
@@ -50,8 +53,10 @@ public class Utility {
                     coolWeatherDB.saveCity(city);
                 }
             }
+            System.out.println("handleCitiesReponse true");
             return true;
         }
+        System.out.println("handleCitiesReponse false");
         return false;
     }
 
