@@ -44,7 +44,8 @@ public class WeatherActivity extends Activity implements View.OnClickListener{
     private Button switchCity;
     //更新天气按钮
     private Button refreshWeather;
-
+    //设置按钮
+    private Button settings;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,6 +62,15 @@ public class WeatherActivity extends Activity implements View.OnClickListener{
         currentDateText=(TextView) findViewById(R.id.current_date);
         switchCity=(Button) findViewById(R.id.switch_city);
         refreshWeather=(Button) findViewById(R.id.refresh_weather);
+        settings=(Button) findViewById(R.id.weather_settings);
+        settings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                System.out.println("settings");
+                Intent i=new Intent(WeatherActivity.this,WeatherSettings.class);
+                startActivity(i);
+            }
+        });
         String countyCode=getIntent().getStringExtra("county_code");
         if(!TextUtils.isEmpty(countyCode)){
             //有县级代号时就去查询天气
@@ -92,6 +102,11 @@ public class WeatherActivity extends Activity implements View.OnClickListener{
                 if(!TextUtils.isEmpty(weatherCode)){
                     queryWeatherInfo(weatherCode);
                 }
+                break;
+            case R.id.weather_settings:
+                System.out.println("settings");
+                Intent i=new Intent(WeatherActivity.this,WeatherSettings.class);
+                startActivity(i);
                 break;
             default:
                 break;
@@ -166,8 +181,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener{
         currentDateText.setText(prefs.getString("current_date",""));
         weatherInfoLayout.setVisibility(View.VISIBLE);
         cityNameText.setVisibility(View.VISIBLE);
-        Intent i=new Intent(this, AutoUpdateService.class);
-        startService(i);
+
     }
 
 }

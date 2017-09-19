@@ -50,6 +50,16 @@
             android:textColor="#FFF"
             android:textSize="18sp"/>
 
+        <Button
+            android:id="@+id/weather_settings"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:text="设置"
+            android:textColor="#FFF"
+           />
 
     <LinearLayout
         android:id="@+id/weather_info_layout"
